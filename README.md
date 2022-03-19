@@ -6,3 +6,9 @@ Meals_APP flutter project.
 
 This project is multiple routes.
 
+
+To run this project : 
+
+flutter packages get
+flutter run
+from the options provided select the android/ios simulator
