@@ -23,6 +23,7 @@ class _MyAppState extends State<MyApp> {
   };
 
   List<Meal> _availableMeals = DUMMY_MEALS;
+  List<Meal> _favouriteMeals = [];
 
   void _setFilters(Map<String, bool> filterData) {
     setState(() {
@@ -31,19 +32,40 @@ class _MyAppState extends State<MyApp> {
       _availableMeals = DUMMY_MEALS.where((meal) {
         if (_filters['gluten'] && !meal.isGlutenFree) {
           return false;
-          }
+        }
         if (_filters['lactose'] && !meal.isLactoseFree) {
           return false;
-          }
+        }
         if (_filters['vegan'] && !meal.isVegan) {
           return false;
-          }
+        }
         if (_filters['vegetarian'] && !meal.isVegetarian) {
           return false;
-          }
-          return true;
+        }
+        return true;
       }).toList();
     });
+  }
+
+  void _toggleFavourite(String mealId) {
+    final existingIndex =
+        _favouriteMeals.indexWhere((meal) => meal.id == mealId);
+
+    if (existingIndex >= 0) {
+      setState(() {
+        _favouriteMeals.removeAt(existingIndex);
+      });
+    } else {
+      setState(() {
+        _favouriteMeals.add(
+          DUMMY_MEALS.firstWhere((meal) => meal.id == mealId),
+        );
+      });
+    }
+  }
+
+  bool _isMealFavourite(String id) {
+    return _favouriteMeals.any((meal) => meal.id == id);
   }
 
   @override
@@ -71,9 +93,10 @@ class _MyAppState extends State<MyApp> {
       // home: CategoriesScreen(),
       initialRoute: '/', //default is /
       routes: {
-        '/': (ctx) => TabsScreen(),
-        CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(_availableMeals),
-        MealDetailScreen.routeName: (ctx) => MealDetailScreen(),
+        '/': (ctx) => TabsScreen(_favouriteMeals),
+        CategoryMealsScreen.routeName: (ctx) =>
+            CategoryMealsScreen(_availableMeals),
+        MealDetailScreen.routeName: (ctx) => MealDetailScreen(_toggleFavourite, _isMealFavourite),
         FiltersScreen.routeName: (ctx) => FiltersScreen(_filters, _setFilters),
       },
       // if named route is absent
