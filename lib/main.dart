@@ -36,6 +36,17 @@ class MyApp extends StatelessWidget {
         CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(),
         MealDetailScreen.routeName: (ctx) => MealDetailScreen(),
       },
+      // if named route is absent
+      onGenerateRoute: (settings) {
+        print(settings.arguments);
+        // here settings.name can be utilised for error handling
+        return MaterialPageRoute(builder: (ctx)=> CategoriesScreen(),);
+      },
+
+      // this is the last fallback , showing something like 404 to show
+      onUnknownRoute: (settings){
+        return MaterialPageRoute(builder: (ctx)=> CategoriesScreen(),);
+      },
     );
   }
 }
